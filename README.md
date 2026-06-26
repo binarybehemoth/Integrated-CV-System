@@ -107,7 +107,7 @@ python3.11 -m venv .venv
 source .venv/bin/activate                       # Windows: .venv\Scripts\Activate.ps1
 python -m pip install --upgrade pip
 # install the CUDA (or cpu) PyTorch wheel first — see requirements.txt
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
 pip install -r requirements.txt
 
 # verify the environment

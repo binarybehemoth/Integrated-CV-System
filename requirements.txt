@@ -17,4 +17,3 @@ easyocr>=1.7.0             # scene-text OCR (Ch 14); needed for CV_ENABLE_OCR
 insightface>=0.7.3         # face recognition (Ch 15); needed for CV_ENABLE_FACE
 onnxruntime>=1.17.0         # optimised inference (Part VIII)
 fiftyone 
-pillow

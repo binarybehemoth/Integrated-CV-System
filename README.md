@@ -7,7 +7,7 @@ the results live to a mobile browser over WebRTC.
 This repository is the companion code for the book
 *Building an Integrated Computer-Vision System*. It grows chapter by
 chapter; this snapshot corresponds to the **complete book** (Parts I–X, Chapters 1–41, plus Appendices A–F): the perception engine and live web stack; the dense, recognition, structural, and 3D capabilities; the trainer with custom, continual, and active learning; the optimization, packaging, security, and scaling layers; and the frontier and capstone material: the perception engine, the world-model
-data structures, the capability interface, the YOLOv8 detector, the
+data structures, the capability interface, the YOLOv26 detector, the
 FastAPI inference server, live WebRTC streaming, the mobile frontend,
 browser/server persistence, and instance segmentation.
 
@@ -67,7 +67,7 @@ browser/server persistence, and instance segmentation.
 
 ## Capabilities (built across the book)
 
-- Object **detection** (YOLOv8 + COCO) — *implemented*
+- Object **detection** (YOLOv26 + COCO) — *implemented*
 - Instance **segmentation** — *implemented*
 - **Keypoints** / pose — *implemented*
 - Multi-object **tracking** — *implemented*
@@ -145,7 +145,7 @@ server/
     capability.py    # the plug-in interface
     engine.py        # threads a WorldModel through capabilities
     config.py        # tunable settings
-    detector.py      # YOLOv8 detection (Chapter 5)
+    detector.py      # YOLOv26 detection (Chapter 5)
     segmenter.py     # instance segmentation (Chapter 10)
     pose.py          # keypoints / pose (Chapter 11)
     tracker.py       # multi-object tracking (Chapter 12)
@@ -195,6 +195,6 @@ Dockerfile         # GPU container image for the server (Ch 33)
 
 Source code in this repository is released under the MIT License
 (see the book's copyright page). **Note:** it depends on Ultralytics
-YOLOv8, which is licensed under **AGPL-3.0**; if you run this as a
+YOLOv26, which is licensed under **AGPL-3.0**; if you run this as a
 network service you must comply with that license. See Chapter 3 of
 the book for a plain-language explanation.

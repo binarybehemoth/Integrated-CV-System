@@ -1,0 +1,1 @@
+"""Integrated computer-vision system."""

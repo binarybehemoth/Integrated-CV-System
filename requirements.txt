@@ -1,0 +1,18 @@
+# Python dependencies for the integrated CV system.
+# Install PyTorch separately first so the correct CUDA wheel is chosen:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+# (use .../whl/cpu if you have no NVIDIA GPU)
+
+ultralytics>=8.4.0          # YOLO26 detect / segment / pose / track
+opencv-python>=4.9.0        # image and video I/O, drawing
+numpy>=1.26.0               # array maths
+pillow>=10.2.0              # image loading
+fastapi>=0.110.0            # the inference HTTP server (Part II)
+uvicorn[standard]>=0.29.0   # ASGI server to run FastAPI
+python-multipart>=0.0.9     # file uploads in the studio (Part VII)
+httpx>=0.27.0               # test client for the HTTP API (Chapter 6)
+transformers>=4.40.0       # monocular depth models (Ch 24)
+timm>=0.9.16               # vision backbones for depth (Ch 24)
+easyocr>=1.7.0             # scene-text OCR (Ch 14); needed for CV_ENABLE_OCR
+insightface>=0.7.3         # face recognition (Ch 15); needed for CV_ENABLE_FACE
+onnxruntime>=1.17.0         # optimised inference (Part VIII)

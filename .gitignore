@@ -1,0 +1,12 @@
+.venv/
+__pycache__/
+*.pyc
+models/*.pt
+models/*.onnx
+models/*.engine
+store/datasets/
+store/jobs/
+*.log
+.DS_Store
+smoke_out.jpg
+out.mp4

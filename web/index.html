@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>Integrated CV System</title>
+  <style>
+    :root { color-scheme: dark; }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: #0e1116; color: #e8edf2;
+           font-family: system-ui, -apple-system, sans-serif; }
+    header { padding: 12px 16px; font-weight: 600; }
+    #stage { position: relative; width: 100vw; max-width: 720px;
+             margin: 0 auto; aspect-ratio: 3 / 4; background: #000; }
+    video, canvas { position: absolute; inset: 0;
+                    width: 100%; height: 100%; object-fit: cover; }
+    /* the display frame is the exact downscaled image sent to the server, so
+       lower resolutions look blockier rather than smoothly upscaled. */
+    #frame { image-rendering: pixelated; }
+    #bar { display: flex; gap: 8px; padding: 12px 16px; align-items: center;
+           flex-wrap: wrap; }
+    button { font-size: 16px; padding: 10px 18px; border: 0;
+             border-radius: 8px; background: #2E75B6; color: #fff; }
+    button:disabled { opacity: .5; }
+    #fps { margin-left: auto; font-variant-numeric: tabular-nums;
+           color: #9DC3E6; }
+    #three { background: #0e1116; display: none; }
+    #modeLabel { position: absolute; top: 8px; left: 8px; right: 8px;
+                 background: rgba(0,0,0,0.55); color: #cfe3ff;
+                 padding: 6px 10px; border-radius: 8px; font-size: 13px;
+                 pointer-events: none; z-index: 3; }
+    #flipDepth { position: absolute; top: 40px; right: 8px; z-index: 4;
+                 display: none; font-size: 13px; padding: 7px 12px;
+                 background: rgba(20,28,38,0.9); color: #cfe3ff;
+                 border: 1px solid #2a3744; border-radius: 8px; }
+    #yoloePrompt { display: none; width: 100%; box-sizing: border-box;
+                 margin-top: 8px; font-size: 14px; padding: 9px 12px;
+                 background: rgba(10,16,24,0.92); color: #eaf2ff;
+                 border: 1px solid #2E75B6; border-radius: 8px; outline: none; }
+    #yoloePrompt::placeholder { color: #7f93a8; }
+    #log { max-width: 720px; margin: 8px auto; padding: 10px 14px;
+           background: #11161d; border: 1px solid #223; border-radius: 8px;
+           font-family: ui-monospace, Menlo, Consolas, monospace;
+           font-size: 12.5px; white-space: pre-wrap; color: #bcd;
+           min-height: 80px; max-height: 220px; overflow: auto; }
+    input[type=range] { accent-color: #2E75B6; }
+    #fpsval { color: #9DC3E6; font-variant-numeric: tabular-nums;
+              min-width: 54px; }
+    #bar label { display: flex; align-items: center; gap: 6px;
+                 font-size: 14px; }
+    select { font-size: 15px; padding: 8px 10px; border-radius: 8px;
+             background: #1a222c; color: #e8edf2; border: 1px solid #2a3744; }
+    #app { display: flex; flex-direction: column; }
+    #side { display: flex; flex-direction: column; }
+    /* Landscape / wide screens: controls + log beside the video, no scroll. */
+    @media (min-width: 860px) {
+      #app { flex-direction: row; align-items: flex-start; gap: 16px;
+             max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+      #stage { margin: 0; flex: 0 0 58%; max-width: 760px; }
+      #side { flex: 1; min-width: 300px; position: sticky; top: 12px; }
+      #bar { flex-direction: column; align-items: stretch; }
+      #bar label, #bar button, #bar select { width: 100%; }
+      #fps { margin-left: 0; }
+      #log { margin: 12px 0 0; max-height: 60vh; }
+    }
+    /* Portrait / phone screens: model box and FPS slider each on their own
+       full-width line so nothing is cramped. */
+    @media (max-width: 859px) {
+      #bar label { flex: 1 1 100%; }          /* each control on a new line */
+      #bar select { flex: 1; width: 100%; }   /* model box fills the width   */
+      #fpsSlider { flex: 1; }                  /* slider expands on its line  */
+      #fps { margin-left: auto; }
+    }
+  </style>
+</head>
+<body>
+  <header>Integrated CV System</header>
+  <div id="app">
+    <div id="stage">
+      <video id="video" autoplay playsinline muted></video>
+      <canvas id="frame"></canvas>
+      <canvas id="overlay"></canvas>
+      <canvas id="three"></canvas>
+      <div id="modeLabel">tap to change view</div>
+      <button id="flipDepth">Flip depth</button>
+    </div>
+    <div id="side">
+      <div id="bar">
+        <button id="start">Start camera</button>
+        <button id="stop" disabled>Stop</button>
+        <label>FPS
+          <input id="fpsSlider" type="range" min="1" max="30" step="1" value="12" />
+          <span id="fpsval">12 fps</span>
+        </label>
+        <label>Resolution
+          <input id="resSlider" type="range" min="10" max="100" step="1" value="100" />
+          <span id="resval">100%</span>
+        </label>
+        <span id="fps">0 fps</span>
+      </div>
+      <div id="log">(waiting for frames&hellip;)</div>
+      <input id="yoloePrompt" type="text" autocomplete="off"
+             placeholder="YOLOE: type any classes, e.g. zebra, traffic cone, skateboard" />
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/overlay.js"></script>
+  <script src="js/rtc.js"></script>
+  <script src="js/viz.js"></script>
+</body>
+</html>
